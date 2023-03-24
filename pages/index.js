@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
+import { getOBBOauthUrl } from "./helper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,9 +19,7 @@ export default function Home() {
           Onboardbase OAuth Sample Project
         </h1>
         <button style={{ padding: "1rem" }}>
-          <a
-            href={`https://app.onboardbase.com/oauth/authorize?response_type=code&client_id=e78ecec4-8087-4318-a2e1-1896e68ca3aa&redirect_uri=https://tutorial-oauth-integration.vercel.app&scopes='read.secrets,read.projects'&state="{"hi":"there"}"`}
-          >
+          <a href={getOBBOauthUrl(`{ "hi": "there" }`)}>
             <p className={inter.className}>Authenticate with Onboardbase</p>
           </a>
         </button>
