@@ -15,17 +15,40 @@ export default function OAuth() {
     const fetchData = async () => {
       console.log("code", code);
       const { clientId, clientSecret, redirectUrl } = config.obb;
+      // const clientId = "e18a327e-c247-4483-8660-180e349abddc";
+      // const clientSecret = "8VEPTKZJN44HY37XQF8A2RMF9";
+      // const redirectUrl = "https://tutorial-oauth-integration.vercel.app/oauth";
       const postURl = `https://api.onboardbase.com/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${code}&redirect_uri=${redirectUrl}
 `;
       console.log("postURl", postURl);
-      const response = await fetch(postURl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await response.json();
-      setProjects(data);
+      try {
+        const response = await fetch(postURl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true,
+          },
+        });
+        const getAuthResult = await response.json();
+
+        const apiKey = getAuthResult?.data?.api_key;
+        console.log("apiKey", apiKey);
+
+        const projectsUrl = `https://public.onboardbase.com/api/v1/projects`;
+        const projectsResponse = await fetch(projectsUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Credentials": true,
+            API_KEY: apiKey,
+          },
+        });
+        const getProjectResult = await projectsResponse.json();
+        console.log("getProjectResult", getProjectResult);
+        setProjects(getProjectResult.data);
+      } catch (error) {
+        console.log("error", error);
+      }
     };
 
     fetchData();
