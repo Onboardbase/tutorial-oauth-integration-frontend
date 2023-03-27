@@ -1,4 +1,4 @@
-import { config } from "../helper";
+import { config } from "../../utils/helper";
 
 export default async function projects(req, res) {
   const query = req.query;
