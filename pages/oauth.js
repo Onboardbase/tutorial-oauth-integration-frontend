@@ -7,14 +7,14 @@ import { useEffect, useState } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function OAuth() {
-  console.log("config", config);
   const router = useRouter();
   const { code } = router.query;
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const apiBaseUrl = "http://localhost:3000/api";
+
+      const apiBaseUrl = config.apiBaseUrl;
       const postURl = `${apiBaseUrl}/projects`;
       try {
         const response = await fetch(postURl, {
