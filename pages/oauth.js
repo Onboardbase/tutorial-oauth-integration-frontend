@@ -7,20 +7,15 @@ import { useEffect, useState } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function OAuth() {
+  console.log("config", config);
   const router = useRouter();
   const { code } = router.query;
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("code", code);
-      const { clientId, clientSecret, redirectUrl } = config.obb;
-      // const clientId = "e18a327e-c247-4483-8660-180e349abddc";
-      // const clientSecret = "8VEPTKZJN44HY37XQF8A2RMF9";
-      // const redirectUrl = "https://tutorial-oauth-integration.vercel.app/oauth";
-      const postURl = `https://api.onboardbase.com/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${code}&redirect_uri=${redirectUrl}
-`;
-      console.log("postURl", postURl);
+      const apiBaseUrl = "http://localhost:3000/api";
+      const postURl = `${apiBaseUrl}/projects`;
       try {
         const response = await fetch(postURl, {
           method: "POST",
@@ -28,25 +23,12 @@ export default function OAuth() {
             "Content-Type": "application/json",
             "Access-Control-Allow-Credentials": true,
           },
+          body: JSON.stringify({ authCode: code }),
         });
-        const getAuthResult = await response.json();
-
-        const apiKey = getAuthResult?.data?.api_key;
-        console.log("apiKey", apiKey);
-
-        const projectsUrl = `https://public.onboardbase.com/api/v1/projects`;
-        const projectsResponse = await fetch(projectsUrl, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Credentials": true,
-            API_KEY: apiKey,
-          },
-        });
-        const getProjectResult = await projectsResponse.json();
-        console.log("getProjectResult", getProjectResult);
-        setProjects(getProjectResult.data);
+        const result = await response.json();
+        setProjects(result.projects ?? []);
       } catch (error) {
+        setProjects([]);
         console.log("error", error);
       }
     };
@@ -59,14 +41,17 @@ export default function OAuth() {
       <Head>
         <title>Onboardbase OAuth - Projects</title>
       </Head>
-      {console.log("projects: ", projects)}
       <main className={styles.main}>
         <h1 style={{ padding: "1rem" }} className={inter.className}>
           Onboardbase OAuth - Projects
         </h1>
-        {projects.map((project, i) => (
-          <h3 key={i}>{project.title}</h3>
-        ))}
+        <ul>
+          {projects.map((project, i) => (
+            <li key={i} className={inter.className}>
+              {project.title}
+            </li>
+          ))}
+        </ul>
       </main>
     </>
   );

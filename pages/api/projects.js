@@ -1,21 +1,69 @@
-import { config } from "../../utils/helper";
+// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 
-export default async function projects(req, res) {
-  const query = req.query;
-  const { code } = query;
+import { config } from "@/utils/helper";
 
-  // use the information from the query to get the products
-  // then send the data back to the client
+const fetchData = async (req) => {
+  const body = req.body;
+  const authCode = body.authCode;
+  if (!authCode) {
+    return {
+      error: "No auth code found",
+      projects: [],
+    };
+  }
+
+  try {
+    const postURl = getOAuthTokenAuthURL(authCode);
+    const response = await fetch(postURl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true,
+      },
+    });
+    const getAuthResult = await response.json();
+    const apiKey = getAuthResult?.data?.api_key;
+    if (!apiKey) {
+      return {
+        error: "No API key found",
+        projects: [],
+      };
+    }
+
+    const projectsUrl = `https://public.onboardbase.com/api/v1/projects`;
+    const projectsResponse = await fetch(projectsUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Credentials": true,
+        API_KEY: apiKey,
+      },
+    });
+    const getProjectResult = await projectsResponse.json();
+    const projects = getProjectResult.data ?? [];
+    return {
+      error: null,
+      projects,
+    };
+  } catch (error) {
+    return {
+      error: "Something went wrong",
+      projects: [],
+    };
+  }
+};
+
+function getOAuthTokenAuthURL(authCode) {
   const { clientId, clientSecret, redirectUrl } = config.obb;
-  const postURl = `https://api.onboardbase.com/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${code}&redirect_uri=${redirectUrl}
+  const postURl = `https://api.onboardbase.com/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${authCode}&redirect_uri=${redirectUrl}
 `;
-  console.log("postURl", postURl);
-  const response = await fetch(postURl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  return postURl;
+}
 
-  return await response.json();
+export default async function handler(req, res) {
+  const result = await fetchData(req);
+  if (result.error) {
+    return res.status(500).json({ error: result.error });
+  }
+  res.status(200).json({ projects: result.projects });
 }

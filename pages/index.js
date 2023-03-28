@@ -2,6 +2,7 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 import { getOBBOauthUrl } from "../utils/helper";
+import Link from "next/link";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +20,9 @@ export default function Home() {
           Onboardbase OAuth Sample Project
         </h1>
         <button style={{ padding: "1rem" }}>
-          <a href={getOBBOauthUrl(`{ "hi": "there" }`)}>
+          <Link href={getOBBOauthUrl(`{ "hi": "there" }`)}>
             <p className={inter.className}>Authenticate with Onboardbase</p>
-          </a>
+          </Link>
         </button>
       </main>
     </>
