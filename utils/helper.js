@@ -4,6 +4,7 @@ export const config = {
     clientSecret: process.env.OBB_CLIENT_SECRET,
     redirectUrl: process.env.OBB_REDIRECT_URL,
   },
+  apiBaseUrl: "https://tutorial-oauth-integration.vercel.app/api",
 };
 
 export const getOBBOauthUrl = (state) => {
