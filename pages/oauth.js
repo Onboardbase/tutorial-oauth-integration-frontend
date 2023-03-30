@@ -14,7 +14,7 @@ export default function OAuth() {
   useEffect(() => {
     const fetchData = async () => {
 
-      const apiBaseUrl = config.apiBaseUrl;
+      const apiBaseUrl = "https://tutorial-oauth-integration.vercel.app/api";
       const postURl = `${apiBaseUrl}/projects`;
       try {
         const response = await fetch(postURl, {
