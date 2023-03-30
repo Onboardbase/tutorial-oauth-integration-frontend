@@ -4,7 +4,6 @@ export const config = {
     clientSecret: process.env.OBB_CLIENT_SECRET,
     redirectUrl: process.env.OBB_REDIRECT_URL,
   },
-  apiBaseUrl: "http://localhost:3000/api",
 };
 
 export const getOBBOauthUrl = (state) => {
