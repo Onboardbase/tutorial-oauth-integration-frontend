@@ -2,7 +2,16 @@
 
 import { config } from "@/utils/helper";
 
-const fetchData = async (req) => {
+
+export default async function handler(req, res) {
+  const result = await fetchProjects(req);
+  if (result.error) {
+    return res.status(500).json({ error: result.error });
+  }
+  res.status(200).json({ projects: result.projects });
+}
+
+async function fetchProjects(req) {
   const body = req.body;
   const authCode = body.authCode;
   if (!authCode) {
@@ -51,19 +60,11 @@ const fetchData = async (req) => {
       projects: [],
     };
   }
-};
+}
 
 function getOAuthTokenAuthURL(authCode) {
   const { clientId, clientSecret, redirectUrl } = config.obb;
   const postURl = `https://api.onboardbase.com/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=authorization_code&code=${authCode}&redirect_uri=${redirectUrl}
 `;
   return postURl;
-}
-
-export default async function handler(req, res) {
-  const result = await fetchData(req);
-  if (result.error) {
-    return res.status(500).json({ error: result.error });
-  }
-  res.status(200).json({ projects: result.projects });
 }
