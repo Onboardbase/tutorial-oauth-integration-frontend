@@ -19,11 +19,12 @@ export default function Home() {
         <h1 style={{ padding: "1rem" }} className={inter.className}>
           Onboardbase OAuth Sample Project
         </h1>
-        <button style={{ padding: "1rem" }}>
-          <Link href={getOBBOauthUrl(`{ "hi": "there" }`)}>
-            <p className={inter.className}>Authenticate with Onboardbase</p>
-          </Link>
-        </button>
+        <Link
+          href={getOBBOauthUrl(`{ "hi": "there" }`)}
+          className="border rounded hover:bg-slate-500"
+        >
+          <button className="p-2">Authenticate with Onboardbase</button>
+        </Link>
       </main>
     </>
   );
