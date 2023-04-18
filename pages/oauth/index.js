@@ -20,18 +20,18 @@ const EnvironmentActions = ({ project, environment, authCode = "" }) => {
       border: "border-green-700",
       color: "bg-green-500",
     },
-    {
-      url: "/oauth/get-webhooks",
-      label: "Get Webooks",
-      color: "bg-yellow-500",
-      border: "border-yellow-700",
-    },
-    {
-      url: "/oauth/get-webhooks",
-      label: "Create Webooks",
-      color: "bg-orange-500",
-      border: "border-red-700",
-    },
+    // {
+    //   url: "/oauth/get-webhooks",
+    //   label: "Get Webooks",
+    //   color: "bg-yellow-500",
+    //   border: "border-yellow-700",
+    // },
+    // {
+    //   url: "/oauth/create-webhooks",
+    //   label: "Create Webooks",
+    //   color: "bg-orange-500",
+    //   border: "border-red-700",
+    // },
   ];
   return environmentActions.map((action) => {
     return (

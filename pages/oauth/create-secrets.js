@@ -120,7 +120,7 @@ const ManageSecretFields = ({ onCreateSecrets = (secres = []) => {} }) => {
     });
   };
   return (
-    <div className="w-auto">
+    <div className="w-auto mt-12">
       <SecretFields
         secrets={secrets}
         onRemove={handleRemoveSecret}
