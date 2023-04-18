@@ -21,6 +21,12 @@ async function fetchSecrets(req) {
     const { secrets } = req.body;
     const encryptedSecrets = secrets
       .map((secret) => {
+        /**
+         * The frontend is expected to send us an array of encrypted secrets
+         * OBB expects encrypted secrets using AES and the API-Key's passphrase as the encryption key
+         * We need to go through all the secrets and encrypt them before we send them over to onbaordbase
+         * If we don't encrypt properly OR we don't use the right key(api_key passphrase) OBB API would return bad encryption error
+         */
         return {
           key: CryptoJS.AES.encrypt(secret.key, passphrase).toString(),
           value: CryptoJS.AES.encrypt(secret.value, passphrase).toString(),
@@ -47,25 +53,28 @@ async function fetchSecrets(req) {
         },
       }
     );
+    /**
+     * The returned data by this API is an array of encrypted secrets.
+     * If you decide to return the secrets back to your frotnend, you might want to decrypt it with your API Key passphrase
+     */
 
-    const secretData = secretsResponse?.data?.data ?? [];
-    const plainSecrets = secretData.secrets.map((secret) => {
-      return {
-        key: CryptoJS.AES.decrypt(secret.key, passphrase).toString(
-          CryptoJS.enc.Utf8
-        ),
-        value: CryptoJS.AES.decrypt(secret.value, passphrase).toString(
-          CryptoJS.enc.Utf8
-        ),
-        id: secret.id,
-      };
-    });
+    // const secretData = secretsResponse?.data?.data ?? [];
+    // const plainSecrets = secretData.secrets.map((secret) => {
+    //   return {
+    //     key: CryptoJS.AES.decrypt(secret.key, passphrase).toString(
+    //       CryptoJS.enc.Utf8
+    //     ),
+    //     value: CryptoJS.AES.decrypt(secret.value, passphrase).toString(
+    //       CryptoJS.enc.Utf8
+    //     ),
+    //     id: secret.id,
+    //   };
+    // });
     return {
       error: null,
-      secrets: plainSecrets,
+      message: "Secrets Created Successfully",
     };
   } catch (error) {
-    console.log(error.response);
     return {
       error: error.message || "Something went wrong",
       secrets: [],
